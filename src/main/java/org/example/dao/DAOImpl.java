@@ -9,6 +9,10 @@ public class DAOImpl<T> implements DAO<T> {
 
     private EntityManager entityManager = JPAUtil.getEm();
 
+    public EntityManager getEntityManager() {
+        return entityManager;
+    }
+
     Class<T> tClass;
 
     public DAOImpl(Class<T> tClass) {
@@ -29,9 +33,8 @@ public class DAOImpl<T> implements DAO<T> {
 
     @Override
     public void update(T t) {
-        begin();
+
         entityManager.merge(t);
-        commit();
     }
 
     @Override

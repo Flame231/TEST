@@ -13,10 +13,12 @@ public class App {
     public static void main(String[] args) throws InterruptedException {
         MyClassDAO myClassDAO = new MyClassDAOImpl();
         MyClass myClass = myClassDAO.get(1);
+
         Runnable runnable = new Runnable() {
             @Override
             public void run() {
                 MyClassDAO myClassDAO = new MyClassDAOImpl();
+                myClassDAO.getEntityManager().getTransaction().begin();
                 MyClass myClass = myClassDAO.get(1);
                 System.out.println(myClass);
                 try {
@@ -24,15 +26,18 @@ public class App {
                 } catch (InterruptedException e) {
                     throw new RuntimeException(e);
                 }
-                MyClass myClass1 = myClassDAO.get(1);
-                System.out.println(myClass1);
+                myClassDAO.getEntityManager().refresh(myClass);
+                System.out.println(myClass);
             }
         };
+
         Thread thread = new Thread(runnable);
         thread.start();
         Thread.currentThread().sleep(1000);
-        myClass.setName("name1");
-        myClassDAO.update(myClass);
+        myClassDAO.getEntityManager().getTransaction().begin();
+        myClass.setName("333");
+        myClassDAO.getEntityManager().flush();
+        myClassDAO.getEntityManager().getTransaction().commit();
 
     }
 }
