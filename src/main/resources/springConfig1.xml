@@ -1,0 +1,58 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+       xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+       xmlns:context="http://www.springframework.org/schema/context"
+       xmlns:tx="http://www.springframework.org/schema/tx"
+       xsi:schemaLocation="http://www.springframework.org/schema/beans
+                            https://www.springframework.org/schema/beans/spring-beans.xsd
+                            http://www.springframework.org/schema/context
+                            https://www.springframework.org/schema/context/spring-context.xsd
+                            http://www.springframework.org/schema/tx
+                            https://www.springframework.org/schema/tx/spring-tx.xsd">
+
+    <!-- Сканирование аннотированных компонентов -->
+    <context:component-scan base-package="org.example.springHibernate"/>
+
+    <!-- Настройка пула соединений DataSource -->
+    <bean id="dataSource" class="org.apache.commons.dbcp2.BasicDataSource" destroy-method="close">
+        <property name="url"
+                  value="jdbc:mysql://localhost:3306/spring_hibernate_integration?createDatabaseIfNotExist=true&amp;useSSL=false&amp;serverTimezone=UTC&amp;allowPublicKeyRetrieval=true"/>
+        <property name="driverClassName" value="com.mysql.cj.jdbc.Driver"/>
+        <property name="username" value="root"/>
+        <property name="password" value="1234"/>
+        <property name="initialSize" value="5"/>
+        <property name="maxTotal" value="20"/>
+    </bean>
+
+    <!-- Настройка фабрики EntityManagerFactory (JPA / Hibernate) -->
+    <bean id="entityManagerFactory" class="org.springframework.orm.jpa.LocalContainerEntityManagerFactoryBean">
+        <property name="dataSource" ref="dataSource"/>
+        <property name="persistenceUnitName" value="jpa-unit"/>
+        <property name="jpaVendorAdapter">
+            <bean class="org.springframework.orm.jpa.vendor.HibernateJpaVendorAdapter"/>
+        </property>
+        <property name="packagesToScan">
+            <list>
+                <value>org.example.springHibernate</value>
+            </list>
+        </property>
+        <property name="jpaProperties">
+            <props>
+                <prop key="hibernate.dialect">org.hibernate.dialect.MySQL8Dialect</prop>
+                <prop key="hibernate.show_sql">true</prop>
+                <prop key="hibernate.format_sql">false</prop>
+                <prop key="hibernate.hbm2ddl.auto">create</prop>
+                <prop key="hibernate.temp.use_jdbc_metadata_defaults">false</prop>
+            </props>
+        </property>
+    </bean>
+
+    <!-- Транзакционный менеджер -->
+    <bean id="transactionManager" class="org.springframework.orm.jpa.JpaTransactionManager">
+        <property name="entityManagerFactory" ref="entityManagerFactory"/>
+    </bean>
+
+    <!-- Включение обработки @Transactional -->
+    <tx:annotation-driven transaction-manager="transactionManager"/>
+
+</beans>

@@ -12,6 +12,8 @@
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+        <maven.compiler.source>17</maven.compiler.source> <!-- Задаем уровень Java для компиляции -->
+        <maven.compiler.target>17</maven.compiler.target>
     </properties>
 
     <build>
@@ -20,7 +22,6 @@
                 <groupId>org.liquibase</groupId>
                 <artifactId>liquibase-maven-plugin</artifactId>
                 <version>4.27.0</version>
-
                 <configuration>
                     <url>jdbc:mysql://localhost:3306/test?createDatabaseIfNotExist=true</url>
                     <propertyFile>liquibase.properties</propertyFile>
@@ -31,53 +32,67 @@
     </build>
 
     <dependencies>
+        <!-- Spring Framework 6 -->
         <dependency>
-            <groupId>javax.persistence</groupId>
-            <artifactId>javax.persistence-api</artifactId>
-            <version>2.2</version>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-context</artifactId>
+            <version>6.1.10</version>
         </dependency>
 
         <dependency>
-            <groupId>org.hibernate</groupId>
+            <groupId>org.springframework</groupId>
+            <artifactId>spring-orm</artifactId>
+            <version>6.1.10</version>
+        </dependency>
+
+        <!-- Пул соединений DataSource -->
+        <dependency>
+            <groupId>org.apache.commons</groupId>
+            <artifactId>commons-dbcp2</artifactId>
+            <version>2.9.0</version>
+        </dependency>
+
+        <!-- Современный Hibernate 6 (автоматически подтянет jakarta.persistence) -->
+        <dependency>
+            <groupId>org.hibernate.orm</groupId>
             <artifactId>hibernate-core</artifactId>
-            <version>5.6.15.Final</version>
+            <version>6.5.2.Final</version>
         </dependency>
 
+        <!-- Lombok -->
         <dependency>
             <groupId>org.projectlombok</groupId>
             <artifactId>lombok</artifactId>
-            <version>1.18.44</version> <!-- или актуальную версию -->
+            <version>1.18.38</version>
             <scope>provided</scope>
         </dependency>
 
+        <!-- Liquibase -->
         <dependency>
             <groupId>org.liquibase</groupId>
             <artifactId>liquibase-core</artifactId>
             <version>4.27.0</version>
         </dependency>
 
+        <!-- Драйвер MySQL -->
         <dependency>
             <groupId>com.mysql</groupId>
             <artifactId>mysql-connector-j</artifactId>
             <version>8.3.0</version>
         </dependency>
 
-        <dependency>
-            <groupId>junit</groupId>
-            <artifactId>junit</artifactId>
-            <version>3.8.1</version>
-            <scope>test</scope>
-        </dependency>
-        <dependency>
-            <groupId>org.testng</groupId>
-            <artifactId>testng</artifactId>
-            <version>7.12.0</version>
-            <scope>test</scope>
-        </dependency>
+        <!-- Тестирование -->
         <dependency>
             <groupId>junit</groupId>
             <artifactId>junit</artifactId>
             <version>4.13.2</version>
+            <scope>test</scope>
+        </dependency>
+
+        <dependency>
+            <groupId>org.testng</groupId>
+            <artifactId>testng</artifactId>
+            <version>7.10.2</version>
             <scope>test</scope>
         </dependency>
     </dependencies>

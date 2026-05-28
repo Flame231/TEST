@@ -1,8 +1,9 @@
 package org.example.dao;
 
+import jakarta.persistence.EntityManager;
 import org.example.JPAUtil;
 
-import javax.persistence.EntityManager;
+
 import java.io.Serializable;
 
 public class DAOImpl<T> implements DAO<T> {

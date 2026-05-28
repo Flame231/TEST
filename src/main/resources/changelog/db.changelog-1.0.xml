@@ -1,0 +1,106 @@
+<databaseChangeLog
+        xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+        xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+        xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+        http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-3.8.xsd">
+
+    <!-- Изменение 1: Создание таблицы Департаментов (Слайд 5) -->
+    <changeSet id="1-create-department-table" author="lecture-notes">
+        <createTable tableName="DEPARTMENT">
+            <column name="DEPARTMENT_ID" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="DEPARTMENT_NAME" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+    </changeSet>
+
+    <!-- Изменение 2: Создание таблицы Сотрудников (Слайд 3) -->
+    <changeSet id="2-create-employee-table" author="lecture-notes">
+        <createTable tableName="EMPLOYEE">
+            <column name="EMPLOYEE_ID" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="FIRST_NAME" type="VARCHAR(255)"/>
+            <column name="LAST_NAME" type="VARCHAR(255)"/>
+            <column name="DEPARTMENT_ID" type="BIGINT"/>
+        </createTable>
+
+        <!-- Внешний ключ на таблицу Департаментов -->
+        <addForeignKeyConstraint baseTableName="EMPLOYEE"
+                                 baseColumnNames="DEPARTMENT_ID"
+                                 constraintName="FK_EMPLOYEE_DEPARTMENT"
+                                 referencedTableName="DEPARTMENT"
+                                 referencedColumnNames="DEPARTMENT_ID"
+                                 onDelete="SET NULL"/>
+    </changeSet>
+
+    <!-- Изменение 3: Создание таблицы Деталей сотрудника (Слайд 4) -->
+    <!-- Использует Shared Primary Key: id является и первичным, и внешним ключом одновременно -->
+    <changeSet id="3-create-employee-detail-table" author="lecture-notes">
+        <createTable tableName="EMPLOYEE_DETAIL">
+            <column name="EMPLOYEE_ID" type="BIGINT">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="STREET" type="VARCHAR(255)"/>
+            <column name="CITY" type="VARCHAR(255)"/>
+            <column name="STATE" type="VARCHAR(255)"/>
+            <column name="ZIP_CODE" type="VARCHAR(20)"/>
+        </createTable>
+
+        <addForeignKeyConstraint baseTableName="EMPLOYEE_DETAIL"
+                                 baseColumnNames="EMPLOYEE_ID"
+                                 constraintName="FK_DETAIL_EMPLOYEE"
+                                 referencedTableName="EMPLOYEE"
+                                 referencedColumnNames="EMPLOYEE_ID"
+                                 onDelete="CASCADE"/>
+    </changeSet>
+
+    <!-- Изменение 4: Создание таблицы Встреч (Слайд 6) -->
+    <changeSet id="4-create-meeting-table" author="lecture-notes">
+        <createTable tableName="MEETING">
+            <column name="MEETING_ID" type="BIGINT" autoIncrement="true">
+                <constraints primaryKey="true" nullable="false"/>
+            </column>
+            <column name="MEETING_SUBJECT" type="VARCHAR(255)">
+                <constraints nullable="false"/>
+            </column>
+            <column name="MEETING_DATE" type="DATE"/>
+        </createTable>
+    </changeSet>
+
+    <!-- Изменение 5: Создание связующей таблицы для ManyToMany (Слайд 6) -->
+    <changeSet id="5-create-employee-meeting-join-table" author="lecture-notes">
+        <createTable tableName="EMPLOYEE_MEETING">
+            <column name="EMPLOYEE_ID" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+            <column name="MEETING_ID" type="BIGINT">
+                <constraints nullable="false"/>
+            </column>
+        </createTable>
+
+        <!-- Составной первичный ключ, чтобы избежать дубликатов связей -->
+        <addPrimaryKey tableName="EMPLOYEE_MEETING"
+                       columnNames="EMPLOYEE_ID, MEETING_ID"
+                       constraintName="PK_EMPLOYEE_MEETING"/>
+
+        <!-- Внешний ключ на сотрудников -->
+        <addForeignKeyConstraint baseTableName="EMPLOYEE_MEETING"
+                                 baseColumnNames="EMPLOYEE_ID"
+                                 constraintName="FK_JOIN_EMPLOYEE"
+                                 referencedTableName="EMPLOYEE"
+                                 referencedColumnNames="EMPLOYEE_ID"
+                                 onDelete="CASCADE"/>
+
+        <!-- Внешний ключ на встречи -->
+        <addForeignKeyConstraint baseTableName="EMPLOYEE_MEETING"
+                                 baseColumnNames="MEETING_ID"
+                                 constraintName="FK_JOIN_MEETING"
+                                 referencedTableName="MEETING"
+                                 referencedColumnNames="MEETING_ID"
+                                 onDelete="CASCADE"/>
+    </changeSet>
+
+</databaseChangeLog>
