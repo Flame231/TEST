@@ -1,12 +1,16 @@
-package org.example.springHibernate;
+package org.example;
 
+import org.example.springHibernate.*;
+import org.junit.Assert;
+import org.junit.Test;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 
-public class SpringHibernateApp {
-    public static void main(String[] args) {
+public class SpringTest {
+    @Test
+    public void testGetEntity() {
         ClassPathXmlApplicationContext context =
                 new ClassPathXmlApplicationContext("springConfig1.xml");
         Department department = Department.builder().departmentName("123").build();
@@ -23,5 +27,6 @@ public class SpringHibernateApp {
 
         EmployeeService employeeService = context.getBean(EmployeeService.class);
         employeeService.addEmployee(employee);
+        Assert.assertEquals((2), (long) employeeService.get(1).getId());
     }
 }

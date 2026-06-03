@@ -2,6 +2,7 @@ package org.example.springHibernate;
 
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Cascade;
 import org.hibernate.annotations.CreationTimestamp;
 
 import java.time.LocalDateTime;
@@ -9,6 +10,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 @Data
+@Builder
 @NoArgsConstructor
 @AllArgsConstructor
 @EqualsAndHashCode(exclude = {"department", "meetings", "employeeDetail"})
@@ -26,7 +28,7 @@ public class Employee {
             cascade = CascadeType.PERSIST)
     private EmployeeDetail employeeDetail;
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.PERSIST)
     @JoinColumn(name = "DEPARTMENT_ID")
     private Department department;
     @ManyToMany(cascade = CascadeType.ALL)
